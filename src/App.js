@@ -1,24 +1,36 @@
-import logo from './logo.svg';
+import React, { useEffect } from "react"
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom"
+import Login from "./Components/Login";
+import Register from "./Components/Register";
+import Dashboard from "./Components/Dashboard";
 import './App.css';
+import { useSelector } from "react-redux";
 
 function App() {
+  const history = useNavigate();
+  const user = useSelector((state) => state.auth)
+  console.log(user);
+
+  useEffect(() => {
+    console.log('App - UseEffect')
+    if (!user.isLoggedIn && !user.user) {
+      console.log('App - Login')
+      history("/login")
+    }
+    else {
+      console.log("App - Register")
+      history("/home")
+    }
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <Routes>
+        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/register" element={<Register />} />
+        <Route exact path="/home" element={<Dashboard />} />
+      </Routes>
+    </React.Fragment>
   );
 }
 
