@@ -14,6 +14,9 @@ verifyToken = (req, res, next) => {
     if (err) {
       return res.status(401).send({ message: "Unauthorized!" });
     }
+    if (new Date(decoded.exp * 1000) < new Date()) {
+      return res.status(401).send({ message: "Token Expired!" });
+    }
     req.userId = decoded.id;
     next();
   });

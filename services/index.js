@@ -35,6 +35,7 @@ app.get("/", (req, res) => {
 
 // routes
 require("./routes/auth.routes")(app);
+require("./routes/data.routes")(app);
 
 const server = http.createServer(app);
 server.listen(PORT, () => {

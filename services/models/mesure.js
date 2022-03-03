@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const Role = mongoose.model(
-  "Role",
+const Mesure = mongoose.model(
+  "Mesure",
   new mongoose.Schema({
     name: String
   }, {
@@ -9,4 +9,4 @@ const Role = mongoose.model(
   })
 );
 
-module.exports = Role;
+module.exports = Mesure;

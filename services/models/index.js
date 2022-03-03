@@ -7,7 +7,11 @@ db.mongoose = mongoose;
 
 db.user = require("./user");
 db.role = require("./role");
+db.rugosite = require("./rugosite");
+db.mesure = require("./mesure");
+db.organisme = require("./organisme");
+db.transformation = require("./transformation");
 
-db.ROLES = ["user", "admin"];
+db.ROLES = ["USER", "ADMIN"];
 
 module.exports = db;

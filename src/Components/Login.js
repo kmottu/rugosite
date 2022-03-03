@@ -1,4 +1,7 @@
 import * as React from 'react';
+import {
+  Alert
+} from "@mui/material"
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,15 +18,17 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Copyright from "./Copyright";
 import { login } from "../store/actions/auth";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
 export default function SignIn() {
-  console.log("I'm here in login")
+  
   const dispatch = useDispatch();
   const history = useNavigate();
+  const message = useSelector((state) => state.message.message || '');
+  const [fail, setFail] = React.useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -39,9 +44,16 @@ export default function SignIn() {
         history("/home");
       })
       .catch(() => {
-        history('/login')
+        history('/login');
+        setFail(true);
       });
   };
+
+
+  React.useEffect(() => {
+    let timer = setTimeout(() => dispatch({ type: "CLEAR_MESSAGE" }), 6000)
+    return (() => clearTimeout(timer));
+  }, [message]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -61,7 +73,8 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          {fail && message ? <Alert severity="error">{message}</Alert> : null}
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required

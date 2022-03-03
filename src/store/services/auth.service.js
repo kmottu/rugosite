@@ -1,10 +1,9 @@
-import axios from "axios";
+import axiosApi from './api.helper';
 
-const API_URL = "http://localhost:3010/api/auth/";
-
+const API_URL = "api/auth/"
 class AuthService {
   login(username, password) {
-    return axios
+    return axiosApi
       .post(API_URL + "signin", { username, password })
       .then((response) => {
         if (response.data.accessToken) {
@@ -19,12 +18,8 @@ class AuthService {
     localStorage.removeItem("user");
   }
 
-  register(username, email, password) {
-    return axios.post(API_URL + "signup", {
-      username,
-      email,
-      password,
-    });
+  register(data) {
+    return axiosApi.post(API_URL + "signup", data);
   }
 }
 

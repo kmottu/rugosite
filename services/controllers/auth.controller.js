@@ -1,15 +1,27 @@
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
+const Organisme = db.organisme;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
-exports.signup = (req, res) => {
+exports.signup = async (req, res) => {
+
+  console.log(req.body);
+  const organisme = new Organisme({
+    nom: req.body.organization,
+    adresse: req.body.adresse,
+    localisation: req.body.localisation,
+  });
+
+  await organisme.save();
+
   const user = new User({
-    username: req.body.username,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
+    password: bcrypt.hashSync(req.body.password, 8),
+    descipline: req.body.descipline,
+    organisme: organisme._id,
   });
 
   user.save((err, user) => {
@@ -41,7 +53,7 @@ exports.signup = (req, res) => {
         }
       );
     } else {
-      Role.findOne({ name: "user" }, (err, role) => {
+      Role.findOne({ name: "USER" }, (err, role) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
@@ -62,9 +74,8 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
-  console.log('I"m here')
   User.findOne({
-    username: req.body.username
+    email: req.body.username
   })
     .populate("roles")
     .exec((err, user) => {
@@ -90,14 +101,16 @@ exports.signin = (req, res) => {
       }
 
       var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_TOKEN, {
-        expiresIn: 86400 // 24 hours
+        expiresIn: 864000 // 24 hours
       });
 
+      console.log(user)
       var authorities = [];
 
       for (let i = 0; i < user.roles.length; i++) {
         authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
       }
+      console.log(authorities)
       res.status(200).send({
         id: user._id,
         username: user.username,
